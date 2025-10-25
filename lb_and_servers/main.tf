@@ -43,13 +43,6 @@ resource "vkcs_networking_router_interface" "vm_router_interface" {
   subnet_id = vkcs_networking_subnet.vm_subnet.id
 }
 
-# Привязка маршрутизатора к подсети
-resource "vkcs_networking_router_interface" "vm_router_interface" {
-  router_id = vkcs_networking_router.vm_router.id
-  subnet_id = vkcs_networking_subnet.vm_subnet.id
-}
-
-
 # Получение данных о внешней сети
 data "vkcs_networking_network" "extnet" {
   name = "ext-net"
