@@ -1,0 +1,1 @@
+ansible-playbook playbook.yml -i inventory.yml -e ansible_host_1a=89.208.230.248 -e ansible_user=ubuntu -b
