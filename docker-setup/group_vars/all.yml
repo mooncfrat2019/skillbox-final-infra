@@ -1,0 +1,7 @@
+---
+# Docker configuration
+docker_users:
+  - "{{ ansible_user }}"
+
+docker_compose_version: "v2.24.0"
+docker_compose_path: "/usr/bin/docker-compose"

@@ -1,0 +1,11 @@
+---
+- name: Deploy Docker and required services
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  vars_files:
+    - group_vars/all.yml
+
+  roles:
+    - docker

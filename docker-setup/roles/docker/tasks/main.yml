@@ -1,0 +1,64 @@
+---
+- name: Обновляем кеш пакетов
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Устанавливаем необходимые пакеты
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+      - python3-pip
+      - git
+    state: present
+
+- name: Добавляем GPG ключ Docker репозитория
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Добавляем Docker репозиторий
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+    filename: docker
+
+- name: Устанавливаем пакеты Docker
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+    update_cache: yes
+
+- name: Устанавливаем docker-compose (standalone) (опционально)
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version | default('v2.24.0') }}/docker-compose-linux-x86_64"
+    dest: "{{ docker_compose_path | default('/usr/local/bin/docker-compose') }}"
+    mode: "0755"
+  when: docker_compose_standalone | default(false) | bool
+
+- name: Создаем группу docker
+  group:
+    name: docker
+    state: present
+
+- name: Добавляем пользователей в группу docker
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  loop: "{{ docker_users | default([ansible_user]) }}"
+
+- name: Запускаем сервис docker
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
