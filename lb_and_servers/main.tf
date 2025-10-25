@@ -67,7 +67,7 @@ resource "vkcs_compute_instance" "ubuntu_vm" {
   name              = "ubuntu-vm"
   flavor_id         = data.vkcs_compute_flavor.vm_flavor.id
   key_pair          = var.key_pair_name
-  security_groups = ["default", "all", "ssh", "www+ssh"]
+  security_groups = ["default", "all", "ssh"]
   availability_zone = var.availability_zone_name
 
   network {
