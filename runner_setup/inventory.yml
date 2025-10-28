@@ -1,0 +1,12 @@
+---
+all:
+  hosts:
+    runner:
+      ansible_ssh_private_key_file: "~/.ssh/id_rsa"
+      ansible_host: "{{ ansible_host }}"
+      ansible_user: "{{ ansible_user }}"
+  vars:
+    gitlab_token: "{{ gitlab_token }}"
+    gitlab_url: "{{ gitlab_url }}"
+    ansible_become: yes
+    ansible_python_interpreter: /usr/bin/python3
