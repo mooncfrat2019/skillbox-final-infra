@@ -29,7 +29,7 @@ data "vkcs_images_image" "compute" {
   }
 }
 
-resource "vkcs_compute_instance" "vpn" {
+resource "vkcs_compute_instance" "runner" {
   name                    = "${var.instance_name}-runner"
   flavor_id               = data.vkcs_compute_flavor.compute.id
   key_pair                = var.key_pair_name
@@ -52,11 +52,11 @@ resource "vkcs_compute_instance" "vpn" {
 }
 
 
-resource "vkcs_networking_floatingip" "vpn_fip" {
+resource "vkcs_networking_floatingip" "runner_fip" {
   pool = var.external_network_name
 }
 
-resource "vkcs_compute_floatingip_associate" "vpn_fip" {
-  floating_ip = vkcs_networking_floatingip.vpn_fip.address
-  instance_id = vkcs_compute_instance.vpn.id
+resource "vkcs_compute_floatingip_associate" "runner_fip" {
+  floating_ip = vkcs_networking_floatingip.runner_fip.address
+  instance_id = vkcs_compute_instance.runner.id
 }
