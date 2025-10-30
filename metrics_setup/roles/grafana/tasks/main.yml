@@ -35,6 +35,20 @@
     remote_src: yes
   become: yes
 
+- name: Копирование файлов grafana (bin)
+  copy:
+    src: "/tmp/grafana/grafana-12.2.0/bin/{{ item }}"
+    dest: "/usr/bin/"
+    mode: "0755"
+    owner: grafana
+    group: grafana
+    remote_src: yes
+  loop:
+    - grafana
+    - grafana-cli
+    - grafana-server
+  become: yes
+
 - name: Создание ini файла grafana
   template:
     src: "grafana.ini.j2"
