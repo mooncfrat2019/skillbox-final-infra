@@ -35,6 +35,7 @@
     mode: "0755"
     owner: node_exporter
     group: node_exporter
+    remote_src: yes
   loop:
     - node_exporter
   become: yes
