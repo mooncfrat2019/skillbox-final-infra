@@ -32,6 +32,7 @@
     mode: "0755"
     owner: grafana
     group: grafana
+    remote_src: yes
   become: yes
 
 - name: Создание ini файла grafana

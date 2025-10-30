@@ -28,21 +28,10 @@
     mode: "0755"
     owner: prometheus
     group: prometheus
+    remote_src: yes
   loop:
     - prometheus
     - promtool
-  become: yes
-
-- name: Копирование консольных файлов Prometheus в /etc/prometheus
-  copy:
-    src: "/tmp/prometheus/prometheus-3.7.3.linux-amd64/{{ item }}"
-    dest: "/etc/prometheus"
-    mode: "0755"
-    owner: prometheus
-    group: prometheus
-  loop:
-    - consoles
-    - console_libraries
   become: yes
 
 - name: Создание конфигурационного файла prometheus
