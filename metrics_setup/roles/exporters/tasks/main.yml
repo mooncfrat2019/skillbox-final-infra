@@ -11,12 +11,32 @@
     chown -R node_exporter:node_exporter /var/lib/node_exporter
   become: yes
 
+- name: Создание временной директории для файлов node_exporter
+  file:
+    path: "/tmp/node_exporter"
+    state: directory
+    mode: "0777"
+    owner: node_exporter
+    group: node_exporter
+  become: yes
+
 - name: Скачивание и распаковка архива
   unarchive:
     src: "{{ node_exporter_url }}"
-    dest: "/usr/bin"
+    dest: "/tmp/node_exporter/"
     mode: "0755"
     remote_src: yes
+  become: yes
+
+- name: Копирование файлов node_exporter
+  copy:
+    src: "/tmp/node_exporter/node_exporter-1.10.2.linux-amd64/{{ item }}"
+    dest: "/usr/bin/"
+    mode: "0755"
+    owner: node_exporter
+    group: node_exporter
+  loop:
+    - node_exporter
   become: yes
 
 - name: Создание systemd service для node_exporter
