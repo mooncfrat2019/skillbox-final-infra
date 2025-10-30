@@ -1,0 +1,54 @@
+---
+- name: Установка и настройка экспортеров
+  tasks:
+    - name: Установка и настройка node_exporter
+      tasks:
+        - name: Создание пользователя
+          shell: |
+            useradd --no-create-home --shell /bin/false node_exporter
+          become: yes
+
+        - name: Создание директорий
+          shell: |
+            mkdir -p /var/lib/node_exporter/textfile_collector
+            chown -R node_exporter:node_exporter /var/lib/node_exporter
+          become: yes
+
+        - name: Скачивание и распаковка архива
+          unarchive:
+            src: "{{ node_exporter_url }}"
+            dest: "/usr/bin"
+            mode: "0755"
+            remote_src: yes
+          become: yes
+
+        - name: Создание systemd service для node_exporter
+          template:
+            src: "node_exporter.service.j2"
+            dest: "/etc/systemd/system/node_exporter.service"
+            owner: root
+            group: root
+            mode: "0644"
+          become: yes
+          notify: reload systemd
+
+        - name: Включение сервиса node_exporter
+          systemd:
+            name: node_exporter
+            state: started
+            enabled: yes
+
+        - name: Проверка наличия метрик на указаноом порту
+          shell: |
+            curl -vi http://localhost:{{ node_exporter_listet_port }}/metrics
+          register: metrics_result
+          ignore_errors: yes
+
+        - name: Вывод результата проверки метрик
+          debug:
+            msg: |
+              Результат проверки метрик:
+              Статус: {{ metrics_result.rc }}
+              Вывод: {{ curl_result.stdout }}
+              Ошибки: {{ curl_result.stderr }}
+        

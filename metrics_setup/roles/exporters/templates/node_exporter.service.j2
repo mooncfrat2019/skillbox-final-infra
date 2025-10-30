@@ -1,0 +1,19 @@
+[Unit]
+Description=Node Exporter
+Documentation=https://prometheus.io/docs/guides/node-exporter/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+Restart=on-failure
+ExecStart=/usr/bin/node_exporter \
+    --web.listen-address=:{{ node_exporter_listet_port }} \
+    --path.rootfs=/ \
+    --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/) \
+    --collector.textfile.directory=/var/lib/node_exporter/textfile_collector
+
+[Install]
+WantedBy=multi-user.target

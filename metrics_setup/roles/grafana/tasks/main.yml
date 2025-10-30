@@ -1,0 +1,61 @@
+---
+- name: Установка Grafana
+  tasks:
+    - name: Подготовка системы
+      shell: |
+        groupadd --system grafana
+        useradd -s /sbin/nologin --system -g grafana grafana
+        mkdir -p /etc/grafana
+        mkdir -p /var/lib/grafana
+        mkdir -p /var/log/grafana
+        mkdir -p /usr/share/grafana
+        chown -R grafana:grafana /usr/share/grafana
+        chown -R grafana:grafana /etc/grafana
+        chown -R grafana:grafana /var/lib/grafana
+        chown -R grafana:grafana /var/log/grafana
+
+    - name: Создание временной директории
+      shell: |
+         mkdir -p /tmp/grafana
+         chmod 777 /tmp/grafana
+
+    - name: Скачивание архива и распаковка
+      unarchive:
+        src: "{{ grafana_url }}"
+        dest: "/tmp/grafana"
+        mode: "0777"
+        remote_src: yes
+
+    - name: Копирование файлов grafana
+      copy:
+        src: "/tmp/grafana/grafana-12.2.0/"
+        dest: "/usr/share/grafana"
+        mode: "0755"
+        owner: grafana
+        group: grafana
+      become: yes
+
+    - name: Создание ini файла grafana
+      template:
+        src: "grafana.ini.j2"
+        dest: "/etc/grafana/grafana.ini"
+        owner: grafana
+        group: grafana
+        mode: "0644"
+      become: yes
+
+    - name: Создание systemd service файла grafana
+      template:
+        src: "grafana.service.j2"
+        dest: "/etc/systemd/system/grafana.service"
+        owner: root
+        group: root
+        mode: "0644"
+      become: yes
+      notify: reload systemd
+
+    - name: Запуск grafana service
+      systemd:
+        name: grafana
+        state: started
+        enabled: yes
