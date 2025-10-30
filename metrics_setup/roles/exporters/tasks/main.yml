@@ -67,6 +67,6 @@
     msg: |
       Результат проверки метрик:
       Статус: {{ metrics_result.rc }}
-      Вывод: {{ curl_result.stdout }}
-      Ошибки: {{ curl_result.stderr }}
+      Вывод: {{ metrics_result.stdout }}
+      Ошибки: {{ metrics_result.stderr }}
 
