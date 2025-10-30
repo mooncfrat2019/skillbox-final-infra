@@ -3,6 +3,7 @@
   shell: |
     useradd --no-create-home --shell /bin/false node_exporter
   become: yes
+  ignore_errors: yes
 
 - name: Создание директорий
   shell: |

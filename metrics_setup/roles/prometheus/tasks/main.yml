@@ -8,6 +8,7 @@
     chown -R prometheus:prometheus /var/lib/prometheus
     chown -R prometheus:prometheus /etc/prometheus
   become: yes
+  ignore_errors: yes
 
 - name: Создание временной директории
   shell: |
