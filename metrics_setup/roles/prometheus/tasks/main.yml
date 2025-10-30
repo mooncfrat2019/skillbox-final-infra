@@ -23,7 +23,7 @@
 
 - name: Копирование исполняемых файлов Prometheus в /usr/bin
   copy:
-    src: "/tmp/prometheus/{{ item }}"
+    src: "/tmp/prometheus/prometheus-3.7.3.linux-amd64/{{ item }}"
     dest: "/usr/bin"
     mode: "0755"
     owner: prometheus
@@ -35,7 +35,7 @@
 
 - name: Копирование консольных файлов Prometheus в /etc/prometheus
   copy:
-    src: "/tmp/prometheus/{{ item }}"
+    src: "/tmp/prometheus/prometheus-3.7.3.linux-amd64/{{ item }}"
     dest: "/etc/prometheus"
     mode: "0755"
     owner: prometheus
