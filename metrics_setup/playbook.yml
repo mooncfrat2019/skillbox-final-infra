@@ -8,25 +8,25 @@
 
   tasks:
     - name: Подготовка хоста
-      roles:
-        - common
+      include_role:
+        name: common
       tags:
         - common
 
     - name: Установка экспортеров
-      roles:
-        - exporters
+      include_role:
+        name: exporters
       tags:
         - exporters
 
     - name: Установка Prometheus
-      roles:
-        - prometheus
+      include_role:
+        name: prometheus
       tags:
         - prometheus
 
     - name: Установка grafana
-      roles:
-        - grafana
+      include_role:
+        name: grafana
       tags:
         - grafana
