@@ -1,0 +1,71 @@
+- name: Подготовка системы
+  shell: |
+    groupadd --system prometheus
+    useradd -s /sbin/nologin --system -g prometheus prometheus
+    mkdir -p /etc/prometheus
+    mkdir -p /var/lib/prometheus
+    mkdir -p /var/lib/prometheus/data
+    chown -R prometheus:prometheus /var/lib/prometheus
+    chown -R prometheus:prometheus /etc/prometheus
+  become: yes
+  ignore_errors: yes
+
+- name: Создание временной директории
+  shell: |
+    mkdir -p /tmp/prometheus
+    chmod 777 /tmp/prometheus
+
+- name: Распаковка файлов Prometheus во временную директорию
+  unarchive:
+    src: "{{ prometheus_url }}"
+    dest: "/tmp/prometheus"
+    remote_src: yes
+
+- name: Копирование исполняемых файлов Prometheus в /usr/bin
+  copy:
+    src: "/tmp/prometheus/prometheus-3.7.3.linux-amd64/{{ item }}"
+    dest: "/usr/bin"
+    mode: "0755"
+    owner: prometheus
+    group: prometheus
+    remote_src: yes
+  loop:
+    - prometheus
+    - promtool
+  become: yes
+
+- name: Создание конфигурационного файла prometheus
+  template:
+    src: "prometheus.yml.j2"
+    dest: "/etc/prometheus/prometheus.yml"
+    owner: prometheus
+    group: prometheus
+    mode: "0644"
+  become: yes
+
+- name: Создание конфигурационного файла для алертов
+  template:
+    src: "alert_rules.yml.j2"
+    dest: "/etc/prometheus/alert_rules.yml"
+    owner: prometheus
+    group: prometheus
+    mode: "0644"
+  become: yes
+
+
+- name: Создание systemd service файла prometheus
+  template:
+    src: "prometheus.service.j2"
+    dest: "/etc/systemd/system/prometheus.service"
+    owner: root
+    group: root
+    mode: "0644"
+  become: yes
+  notify: reload systemd
+
+- name: Запуск Prometheus
+  systemd:
+    name: prometheus
+    state: started
+    enabled: yes
+

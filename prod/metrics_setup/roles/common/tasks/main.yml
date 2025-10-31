@@ -1,0 +1,16 @@
+---
+- name: Обновление списка пакетов
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Установка необходимых пакетов
+  apt:
+    name:
+      - curl
+      - wget
+      - gnupg
+      - software-properties-common
+      - apt-transport-https
+      - ca-certificates
+    state: present

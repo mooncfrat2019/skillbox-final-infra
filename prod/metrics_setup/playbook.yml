@@ -1,0 +1,32 @@
+---
+- name: Установка компонентов для сервера метрик
+  hosts: "metrics"
+  become: yes
+  gather_facts: yes
+  vars_files:
+    - group_vars/all.yml
+
+  tasks:
+    - name: Подготовка хоста
+      include_role:
+        name: common
+      tags:
+        - common
+
+    - name: Установка экспортеров
+      include_role:
+        name: exporters
+      tags:
+        - exporters
+
+    - name: Установка Prometheus
+      include_role:
+        name: prometheus
+      tags:
+        - prometheus
+
+    - name: Установка grafana
+      include_role:
+        name: grafana
+      tags:
+        - grafana

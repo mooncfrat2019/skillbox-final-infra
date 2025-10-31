@@ -1,0 +1,27 @@
+[Unit]
+Description=Grafana instance
+Documentation=https://grafana.com/docs
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=notify
+User=grafana
+Group=grafana
+RuntimeDirectory=grafana
+WorkingDirectory=/usr/share/grafana
+Environment=GF_PATHS_HOME=/usr/share/grafana
+Environment=GF_PATHS_CONFIG=/etc/grafana/grafana.ini
+Environment=GF_PATHS_DATA=/var/lib/grafana
+Environment=GF_PATHS_LOGS=/var/log/grafana
+Environment=GF_PATHS_PLUGINS=/var/lib/grafana/plugins
+Environment=GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+ExecStart=/usr/bin/grafana server --config=/etc/grafana/grafana.ini
+
+LimitNOFILE=10000
+TimeoutStopSec=20
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
