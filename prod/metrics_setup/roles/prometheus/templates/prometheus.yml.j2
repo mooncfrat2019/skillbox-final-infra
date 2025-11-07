@@ -34,7 +34,7 @@ scrape_configs:
   #  scrape_interval: 5s
 
    # мониторинг Skillbox App
-   - job_name: 'reviews_exporter'
-     static_configs:
-       - targets: ['{{ reviews_exporter_host }}:{{ reviews_exporter_port }}', '{{ reviews_exporter_ip }}:{{ reviews_exporter_port }}']
-     scrape_interval: 5s
+  - job_name: 'reviews_exporter'
+    static_configs:
+      - targets: ['{{ reviews_exporter_host }}:{{ reviews_exporter_port }}', '{{ reviews_exporter_ip }}:{{ reviews_exporter_port }}']
+    scrape_interval: 5s
